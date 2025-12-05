@@ -1,5 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
-import { clicker } from './clicker';
+import { clicker } from './gameplay/clicker';
 import { walletPanel } from './walletPanel';
 
 const { ccclass, property } = _decorator;

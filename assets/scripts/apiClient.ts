@@ -3,6 +3,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('apiClient')
 export class apiClient extends Component {
+    // connect to server
     start() {
 
     }

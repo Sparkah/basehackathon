@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, RichText } from 'cc';
-import { gameManager } from './gameManager';
+import { gameManager } from '../gameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('clicker')

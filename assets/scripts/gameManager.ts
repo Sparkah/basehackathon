@@ -42,22 +42,22 @@ export class gameManager extends Component {
             this.WalletPannel.active = false;
         }
 
-            if (this.Clicker) {
-                this.Clicker.startGame();
-            }
+        if (this.Clicker) {
+            this.Clicker.startGame();
+        }
     }
 
     public onRunFinished(finalScore: number) {
-    console.log("Run ended with score:", finalScore);
+        console.log("Run ended with score:", finalScore);
 
-    if (this.GameplayPanel) {
-        this.GameplayPanel.active = false;
+        if (this.GameplayPanel) {
+            this.GameplayPanel.active = false;
+        }
+
+        if (this.MenuPanel) {
+            this.MenuPanel.active = true;
+        }
+
+        // TODO: send score to backend here
     }
-
-    if (this.MenuPanel) {
-        this.MenuPanel.active = true;
-    }
-
-    // TODO: send score to backend here
-}
 }

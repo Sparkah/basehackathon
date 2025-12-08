@@ -14,8 +14,8 @@ export class clicker extends Component {
     @property
     public timer: number = 10;
 
-    @property(gameManager)
-    public GameManager: gameManager = null;   // 👈 Add this
+    @property(Node)
+    public GameManager: gameManager = null;
 
     private _score: number = 0;
     private _timerRichText: RichText = null;
@@ -41,6 +41,7 @@ export class clicker extends Component {
 
         this._timerRichText = this.timerText.getComponent(RichText);
         this._scoreRichText = this.scoreText.getComponent(RichText);
+        this.GameManager = this.GameManager.getComponent(gameManager);
     }
 
     update(deltaTime: number) {
@@ -56,6 +57,10 @@ export class clicker extends Component {
 
             if (this.GameManager) {
                 this.GameManager.onRunFinished(this._score);
+            }
+            else
+            {
+                console.log("Game Manager is not assigned! Did not report final score.");
             }
 
             return;

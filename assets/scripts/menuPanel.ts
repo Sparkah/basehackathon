@@ -11,9 +11,21 @@ export class menuPanel extends Component {
     @property(Button)
     public startGameBtn: Button = null;
 
+    @property(Button)
+    public viewNormalLeaderbiardBtn: Button = null;
+
+    @property(Button)
+    public viewNFTLeaderbiardBtn: Button = null;
+
     start() {
         if (this.startGameBtn) {
             this.startGameBtn.node.on(Button.EventType.CLICK, this._onStartClicked, this);
+        }
+        if(this.viewNormalLeaderbiardBtn) {
+            this.viewNormalLeaderbiardBtn.node.on(Button.EventType.CLICK, this._onViewNormalLeaderboardClicked, this);
+        }
+        if(this.viewNFTLeaderbiardBtn) {
+            this.viewNFTLeaderbiardBtn.node.on(Button.EventType.CLICK, this._onViewNFTLeaderboardClicked, this);
         }
     }
 
@@ -22,4 +34,16 @@ export class menuPanel extends Component {
             this.GameManager.startGame();
         }
     }
+
+    private _onViewNormalLeaderboardClicked() {
+        if (this.GameManager) {
+            this.GameManager.showNormalLeaderboard();
+        }
+    }
+
+    private _onViewNFTLeaderboardClicked() {
+        if (this.GameManager) {
+            this.GameManager.showNFTLeaderboard();
+        }
+    }   
 }

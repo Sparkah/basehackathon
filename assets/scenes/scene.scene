@@ -77,7 +77,7 @@
         "__id__": 100
       },
       {
-        "__id__": 97
+        "__id__": 98
       },
       {
         "__id__": 14
@@ -613,7 +613,7 @@
     "Clicker": {
       "__id__": 7
     },
-    "WalletPannel": {
+    "authPanel": {
       "__id__": 97
     },
     "LeaderboardPanel": {
@@ -2405,8 +2405,20 @@
     "_id": "730pwlU51OYqOx8+4Y2G+H"
   },
   {
+    "__type__": "90b9aPjXKdGfqQXsk/Z4xZz",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 98
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "_id": "5dKJHRJnlCXq6jsFNdr389"
+  },
+  {
     "__type__": "cc.Node",
-    "_name": "WalletConnect",
+    "_name": "AuthPanel",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2416,10 +2428,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 98
+        "__id__": 99
       },
       {
-        "__id__": 99
+        "__id__": 97
       }
     ],
     "_prefab": null,
@@ -2458,7 +2470,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 97
+      "__id__": 98
     },
     "_enabled": true,
     "__prefab": null,
@@ -2473,18 +2485,6 @@
       "y": 0.5
     },
     "_id": "49M6Tm1IhEl73OBu7I1+t0"
-  },
-  {
-    "__type__": "165caKl1ktHMZIP9lBox9RM",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 97
-    },
-    "_enabled": true,
-    "__prefab": null,
-    "_id": "a0pFVrJD5Gc7gPBx2XrXrV"
   },
   {
     "__type__": "cc.Node",

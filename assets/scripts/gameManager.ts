@@ -1,8 +1,8 @@
 import { _decorator, Component, Node } from 'cc';
 import { clicker } from './gameplay/clicker';
-import { walletPanel } from './walletPanel';
 import { apiClient } from './apiClient';
 import { leaderboard } from './Leaderboard/leaderboard';
+import { authPanel } from './auth/authPanel';
 
 const { ccclass, property } = _decorator;
 
@@ -18,8 +18,8 @@ export class gameManager extends Component {
     @property(clicker)
     public Clicker: clicker = null;
 
-    @property(Node)
-    public WalletPannel: Node = null;
+    @property(authPanel)
+    public authPanel: authPanel = null;
 
     public ApiClient: apiClient = null;
 
@@ -28,6 +28,7 @@ export class gameManager extends Component {
 
     start() {
         this.ApiClient = new apiClient();
+        this.authPanel.signInWithBase();
 
         if (this.MenuPanel) {
             this.MenuPanel.active = true;
@@ -47,8 +48,8 @@ export class gameManager extends Component {
             this.GameplayPanel.active = false;
         }
 
-        if (this.WalletPannel) {
-            this.WalletPannel.active = false;
+        if (this.authPanel) {
+            this.authPanel.node.active = false;
         }
 
         if (this.LeaderboardPanel) {
@@ -65,8 +66,8 @@ export class gameManager extends Component {
             this.GameplayPanel.active = true;
         }
 
-        if (this.WalletPannel) {
-            this.WalletPannel.active = false;
+        if (this.authPanel) {
+            this.authPanel.node.active = false;
         }
 
         if (this.Clicker) {

@@ -28,7 +28,7 @@ export class gameManager extends Component {
 
     start() {
         this.ApiClient = new apiClient();
-        this.authPanel.signInWithBase();
+        this.authPanel.loginSequence();
 
         if (this.MenuPanel) {
             this.MenuPanel.active = true;

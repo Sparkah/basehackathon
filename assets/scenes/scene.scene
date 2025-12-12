@@ -909,9 +909,9 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 17,
+      "g": 95,
+      "b": 86,
       "a": 255
     },
     "_spriteFrame": {
@@ -1341,7 +1341,7 @@
     "_string": "Play",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 27.8125,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1629,7 +1629,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 347.6639308286517,
+      "width": 347.6953125,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1731,7 +1731,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 543.1931179775281,
+      "width": 543.2421875,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1833,7 +1833,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 831.1163096910112,
+      "width": 831.19140625,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2843,7 +2843,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 365.30337078651684,
+    "_orthoHeight": 413.57702349869453,
     "_near": 0,
     "_far": 2000,
     "_color": {

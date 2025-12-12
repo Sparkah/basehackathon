@@ -25,7 +25,7 @@ export class gameManager extends Component {
         this.ApiClient = new apiClient();
         this.playerData = new playerData();
 
-        // Load data once at start
+        // Load data once at start//
         this.authPanel.initMiniApp().then(() => {
             this.loadAndRefresh();
         });

@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 128
+      "__id__": 132
     },
     "_id": "3f4d3524-711f-4f27-a607-775f527978ba"
   },
@@ -314,8 +314,8 @@
     "timerText": {
       "__id__": 11
     },
-    "timer": 10,
-    "GameManager": {
+    "defaultTime": 10,
+    "GameManagerNode": {
       "__id__": 14
     },
     "_id": "9cg2cUw9FLSqWiO2HuGEnu"
@@ -619,6 +619,9 @@
     "LeaderboardPanel": {
       "__id__": 100
     },
+    "PlayerStatsPanel": {
+      "__id__": 71
+    },
     "_id": "17FWm/WTJDbp7btcj/Cm5X"
   },
   {
@@ -652,7 +655,7 @@
         "__id__": 72
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 95
@@ -1670,7 +1673,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "RichTextCurrentTimer",
+    "_name": "RichTextCurrentCrit",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1978,12 +1981,14 @@
     "coinsText": {
       "__id__": 59
     },
-    "timeText": {
+    "critText": {
       "__id__": 62
     },
     "incomeText": {
       "__id__": 65
     },
+    "critUpgradeBtn": null,
+    "tapValueUpgradeBtn": null,
     "_id": "aeMMNdjhNPu5UafirIEGLJ"
   },
   {
@@ -2015,7 +2020,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -264.4440000000001,
+      "y": -261.9440000000001,
       "z": 0
     },
     "_lrot": {
@@ -2101,7 +2106,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Button"
+    "value": "ButtonCritUpgrade"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -2119,8 +2124,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 2.477999999999952,
-      "y": 28.41500000000002,
+      "x": 0,
+      "y": 40.876000000000005,
       "z": 0
     }
   },
@@ -2163,7 +2168,7 @@
     "propertyPath": [
       "_string"
     ],
-    "value": "Upgrade Timer"
+    "value": "Upgrade Crit"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -2231,7 +2236,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Button"
+    "value": "ButtonTapValueUpgrade"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -2249,8 +2254,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": -5.076999999999998,
-      "y": -37.06599999999998,
+      "x": 0,
+      "y": -39.12399999999998,
       "z": 0
     }
   },
@@ -2293,7 +2298,7 @@
     "propertyPath": [
       "_string"
     ],
-    "value": "Upgrade Income"
+    "value": "Upgrade Tap Value"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -2953,6 +2958,12 @@
       },
       {
         "__id__": 126
+      },
+      {
+        "__id__": 128
+      },
+      {
+        "__id__": 130
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -3043,30 +3054,74 @@
     ]
   },
   {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 71
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "critUpgradeBtn"
+    ],
+    "target": {
+      "__id__": 73
+    },
+    "targetInfo": {
+      "__id__": 129
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "75vs5v0QxLioi4zUGEnoy0"
+    ]
+  },
+  {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 71
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "tapValueUpgradeBtn"
+    ],
+    "target": {
+      "__id__": 83
+    },
+    "targetInfo": {
+      "__id__": 131
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "75vs5v0QxLioi4zUGEnoy0"
+    ]
+  },
+  {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 129
-    },
-    "shadows": {
-      "__id__": 130
-    },
-    "_skybox": {
-      "__id__": 131
-    },
-    "fog": {
-      "__id__": 132
-    },
-    "octree": {
       "__id__": 133
     },
-    "skin": {
+    "shadows": {
       "__id__": 134
     },
-    "lightProbeInfo": {
+    "_skybox": {
       "__id__": 135
     },
-    "postSettings": {
+    "fog": {
       "__id__": 136
+    },
+    "octree": {
+      "__id__": 137
+    },
+    "skin": {
+      "__id__": 138
+    },
+    "lightProbeInfo": {
+      "__id__": 139
+    },
+    "postSettings": {
+      "__id__": 140
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

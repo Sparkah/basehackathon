@@ -3,118 +3,98 @@ import { clicker } from './gameplay/clicker';
 import { apiClient } from './apiClient';
 import { leaderboard } from './Leaderboard/leaderboard';
 import { authPanel } from './auth/authPanel';
+import { playerStatsPanel } from './menu/playerStatsPanel';
+import { playerData } from './playerData';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('gameManager')
 export class gameManager extends Component {
 
-    @property(Node)
-    public GameplayPanel: Node = null;
-
-    @property(Node)
-    public MenuPanel: Node = null;
-
-    @property(clicker)
-    public Clicker: clicker = null;
-
-    @property(authPanel)
-    public authPanel: authPanel = null;
+    @property(Node) public GameplayPanel: Node = null;
+    @property(Node) public MenuPanel: Node = null;
+    @property(clicker) public Clicker: clicker = null;
+    @property(authPanel) public authPanel: authPanel = null;
+    @property(Node) public LeaderboardPanel: Node = null;
+    @property(playerStatsPanel) public PlayerStatsPanel: playerStatsPanel = null;
 
     public ApiClient: apiClient = null;
-
-    @property(Node)
-    public LeaderboardPanel: Node = null;
+    public playerData: playerData = null;
 
     start() {
         this.ApiClient = new apiClient();
-        this.authPanel.loginSequence();
+        this.playerData = new playerData();
 
-        if (this.MenuPanel) {
-            this.MenuPanel.active = true;
-        }
+        // Load data once at start
+        this.authPanel.initMiniApp().then(() => {
+            this.loadAndRefresh();
+        });
 
-        if (this.GameplayPanel) {
-            this.GameplayPanel.active = false;
-        }
+        this.showMenu();
     }
 
-    public showMenu() {
-        if (this.MenuPanel) {
-            this.MenuPanel.active = true;
-        }
+    // Load data from server and refresh UI
+    async loadAndRefresh() {
+        await this.playerData.loadData();
+        this.refreshUI();
+    }
 
-        if (this.GameplayPanel) {
-            this.GameplayPanel.active = false;
+    // Refresh UI using current local data
+    refreshUI() {
+        if (this.PlayerStatsPanel) {
+            this.PlayerStatsPanel.updateStats(this.playerData);
         }
-
-        if (this.authPanel) {
-            this.authPanel.node.active = false;
-        }
-
-        if (this.LeaderboardPanel) {
-            this.LeaderboardPanel.active = false;
+        if (this.Clicker) {
+            this.Clicker.setPlayerData(this.playerData);
         }
     }
 
     public startGame() {
-        if (this.MenuPanel) {
-            this.MenuPanel.active = false;
-        }
-
-        if (this.GameplayPanel) {
-            this.GameplayPanel.active = true;
-        }
-
-        if (this.authPanel) {
-            this.authPanel.node.active = false;
-        }
+        this.MenuPanel.active = false;
+        this.GameplayPanel.active = true;
+        this.authPanel.node.active = false;
+        this.LeaderboardPanel.active = false;
 
         if (this.Clicker) {
+            this.Clicker.setPlayerData(this.playerData);
             this.Clicker.startGame();
-        }
-
-        if (this.LeaderboardPanel) {
-            this.LeaderboardPanel.active = false;
         }
     }
 
     public onRunFinished(finalScore: number) {
-        console.log("Run ended with score:", finalScore);
+        console.log("Run ended. Score:", finalScore);
 
-        // Send score to backend here
+        // 1. OPTIMISTIC UPDATE: Update frontend immediately
+        // We know the backend logic: Score = Coins. So we just add it locally.
+        this.playerData.currentCoins += finalScore;
+        this.refreshUI();
+
+        // 2. BACKGROUND SYNC: Tell server to save it
         if (this.ApiClient) {
-            this.ApiClient.sendRunFinished(finalScore);
+            this.ApiClient.sendRunFinished(finalScore).then(() => {
+                console.log("Run synced to server.");
+                // Optional: Fetch fresh data to ensure we are perfectly synced
+                // this.playerData.loadData(); 
+            });
         }
 
-        // Update UI panels
-        if (this.GameplayPanel) {
-            this.GameplayPanel.active = false;
-        }
+        // 3. Switch Panel Instantly
+        this.showMenu();
+    }
 
-        if (this.MenuPanel) {
-            this.MenuPanel.active = true;
-        }
+    public showMenu() {
+        this.MenuPanel.active = true;
+        this.GameplayPanel.active = false;
+        this.LeaderboardPanel.active = false;
+        if (this.authPanel) this.authPanel.node.active = false;
     }
 
     public showNormalLeaderboard() {
-        console.log("Show Normal Leaderboard clicked");
-        if (this.LeaderboardPanel) {
-            this.LeaderboardPanel.active = true;
-            var leaderboardComp = this.LeaderboardPanel.getComponent(leaderboard);
-            if (leaderboardComp && this.ApiClient) {
-                this.ApiClient.getAllRuns().then(runs => {
-                    leaderboardComp.showLeaderboard(runs);
-                });
-            }
+        this.LeaderboardPanel.active = true;
+        var comp = this.LeaderboardPanel.getComponent(leaderboard);
+        if (comp && this.ApiClient) {
+            this.ApiClient.getAllRuns().then(runs => comp.showLeaderboard(runs));
         }
-
-        if (this.MenuPanel) {
-            this.MenuPanel.active = false;
-        }
-    }
-
-    public showNFTLeaderboard() {
-        console.log("Show NFT Leaderboard clicked");
+        this.MenuPanel.active = false;
     }
 }

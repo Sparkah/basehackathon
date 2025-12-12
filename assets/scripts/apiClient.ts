@@ -1,16 +1,46 @@
 import { _decorator, Component } from 'cc';
 const { ccclass, property } = _decorator;
 
+// Define the shape of a Run based on your new Backend logic
+interface RunData {
+    id: number;
+    score: number;
+    createdAt: string;
+    user: {
+        username: string;
+        fid: number;
+    };
+}
+
 @ccclass('apiClient')
 export class apiClient extends Component {
 
     @property
     public BaseUrl: string = 'https://basebackend-production-f4f9.up.railway.app';
 
-    public async sendRunFinished(score: number) {
+    public async sendRunFinished(score: number): Promise<number> {
         try {
+            let fid = Number(localStorage.getItem('user_fid'));
+
+            if (!fid) {
+                const sdk = (window as any).miniapp;
+                if (sdk) {
+                    const context = await sdk.context;
+                    if (context && context.user) {
+                        fid = context.user.fid;
+                    }
+                }
+            }
+
+            if (!fid || fid === 0) {
+                console.error("❌ Fatal Error: No FID found in Storage or Context. Cannot save run.");
+                return;
+            }
+
+            console.log(`🚀 Sending run for FID: ${fid}, Score: ${score}`);
+
             var body = {
-                walletAddress: 'anonymous', // later replace with real wallet from WalletConnect
+                fid: fid,
                 score: score,
             };
 
@@ -24,18 +54,18 @@ export class apiClient extends Component {
 
             if (!response.ok) {
                 var text = await response.text();
-                console.error('API error:', text);
+                console.error('❌ API error:', text);
                 return;
             }
 
             var data = await response.json();
-            console.log('Run saved:', data);
+            console.log('✅ Run saved:', data);
         } catch (e) {
-            console.error('Failed to send run:', e);
+            console.error('❌ Failed to send run:', e);
         }
     }
 
-    public async getAllRuns(): Promise<Array<{ walletAddress: string; score: number; createdAt: string; }>> {
+    public async getAllRuns(): Promise<RunData[]> {
         try {
             var response = await fetch(`${this.BaseUrl}/runs/all`, {
                 method: 'GET',
@@ -43,16 +73,54 @@ export class apiClient extends Component {
 
             if (!response.ok) {
                 var text = await response.text();
-                console.error('API error:', text);
+                console.error('❌ API error:', text);
                 return [];
             }
 
-            var data = await response.json();
-            console.log('Fetched runs:', data);
+            var data: RunData[] = await response.json();
+
+            if (data.length > 0) console.log('Fetched first run:', data[0]);
+
             return data;
         } catch (e) {
-            console.error('Failed to fetch runs:', e);
+            console.error('❌ Failed to fetch runs:', e);
             return [];
+        }
+    }
+
+    // Add these methods to your apiClient class
+
+    public async upgradeCrit(): Promise<any> {
+        return this._callUpgradeEndpoint('/users/upgradecrit');
+    }
+
+    public async upgradeTapValue(): Promise<any> {
+        return this._callUpgradeEndpoint('/users/upgradevalue');
+    }
+
+    private async _callUpgradeEndpoint(endpoint: string) {
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) return null;
+
+            const response = await fetch(`${this.BaseUrl}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                // Body is empty now because backend reads from Token
+            });
+
+            if (!response.ok) {
+                console.error("Upgrade failed:", await response.text());
+                return null;
+            }
+
+            return await response.json();
+        } catch (e) {
+            console.error("Upgrade error:", e);
+            return null;
         }
     }
 }

@@ -4,58 +4,78 @@ const { ccclass } = _decorator;
 @ccclass('authPanel')
 export class authPanel extends Component {
 
-    public async signInWithBase() {
-        const sdk = (window as any).miniapp;
+    async initMiniApp() {
+        const sdk = this.getFarcasterSDK();
 
         if (!sdk) {
-            console.error("SDK not found on window.miniapp");
+            console.error("❌ SDK not found. Are you in a browser?");
             return;
         }
 
-        console.log("SDK Found:", sdk);
+        console.log("✅ SDK Found. Initializing...");
 
         try {
-            if (sdk.actions) {
-                await sdk.actions.ready();
-            } else if (sdk.sdk && sdk.sdk.actions) {
-                await sdk.sdk.actions.ready();
-            }
-            console.log("MiniApp Ready!");
+            await sdk.actions.ready();
+            console.log("✅ sent sdk.actions.ready()");
+
+            await this.silentLogin(sdk);
+
         } catch (e) {
-            console.error("SDK Error:", e);
+            console.error("❌ SDK Init Error:", e);
         }
     }
 
-    async loginSequence() {
-        const sdk = (window as any).miniapp;
+    async silentLogin(sdk: any) {
+        try {
+            console.log("🕵️ Starting Silent Login...");
 
-        // 1. Get Nonce from Backend
-        const nonceRes = await fetch('https://basebackend-production-f4f9.up.railway.app/auth/nonce');
-        const { nonce } = await nonceRes.json();
+            const context = await sdk.context;
 
-        // 2. Request Signature from Farcaster (SIWF)
-        const result = await sdk.actions.signIn({ nonce });
-
-        if (result.error) {
-            console.error("User rejected login");
-            return;
+            if (context && context.user) {
+                console.log("👤 User Context Found:", context.user.username);
+                await this.loginToBackend(context.user);
+            } else {
+                console.warn("⚠️ No user context found. (Running outside Farcaster?)");
+            }
+        } catch (e) {
+            console.error("❌ Silent login error:", e);
         }
+    }
 
-        // 3. Verify on Backend & Get Session Token
-        const loginRes = await fetch('https://basebackend-production-f4f9.up.railway.app/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: result.message,
-                signature: result.signature,
-                nonce: nonce
-            })
-        });
+    async loginToBackend(userContext: any) {
+        try {
+            const response = await fetch('https://basebackend-production-f4f9.up.railway.app/auth/login-silent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fid: userContext.fid,
+                    username: userContext.username,
+                    displayName: userContext.displayName,
+                    pfpUrl: userContext.pfpUrl
+                })
+            });
 
-        const { accessToken } = await loginRes.json();
-        console.log("Logged in! Token:", accessToken);
+            if (!response.ok) {
+                throw new Error(`Backend Status: ${response.status}`);
+            }
 
-        // 4. Store Token for future API calls
-        localStorage.setItem('auth_token', accessToken);
+            const data = await response.json();
+            console.log("🔐 Backend Auth Success! Token:", data.accessToken);
+
+            // Save token
+            localStorage.setItem('auth_token', data.accessToken);
+            localStorage.setItem('user_fid', userContext.fid.toString());
+        } catch (error) {
+            console.error("❌ Backend connection failed:", error);
+        }
+    }
+
+    private getFarcasterSDK() {
+        const raw = (window as any).miniapp;
+        if (!raw) return null;
+        if (raw.actions) return raw;
+        if (raw.default && raw.default.actions) return raw.default;
+        if (raw.sdk && raw.sdk.actions) return raw.sdk;
+        return null;
     }
 }

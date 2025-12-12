@@ -1,7 +1,16 @@
-import { _decorator, Component, Node, RichText, instantiate, Prefab } from 'cc';
-const { ccclass, property } = _decorator;
-import { Button } from 'cc';
+import { _decorator, Component, Node, RichText, instantiate, Prefab, Button } from 'cc';
 import { gameManager } from '../gameManager';
+const { ccclass, property } = _decorator;
+
+interface RunData {
+    id: number;
+    score: number;
+    createdAt: string;
+    user: {
+        username: string;
+        fid: number;
+    };
+}
 
 @ccclass('leaderboard')
 export class leaderboard extends Component {
@@ -17,7 +26,6 @@ export class leaderboard extends Component {
 
     private _textNodes: Node[] = [];
     private _textComponents: RichText[] = [];
-
     private _maxLeaders: number = 100;
 
     start() {
@@ -31,8 +39,8 @@ export class leaderboard extends Component {
         }
 
         for (var i = 0; i < this._maxLeaders; i++) {
-            var itemNode = instantiate(this.DisplyPlayerPrefab); // Node
-            var rich = itemNode.getComponent(RichText);          // RichText
+            var itemNode = instantiate(this.DisplyPlayerPrefab);
+            var rich = itemNode.getComponent(RichText);
 
             if (!rich) {
                 console.error('Prefab has no RichText component');
@@ -47,7 +55,7 @@ export class leaderboard extends Component {
         }
     }
 
-    public showLeaderboard(runs: Array<{ walletAddress: string; score: number; createdAt: string; }>) {
+    public showLeaderboard(runs: any[]) { 
         for (var i = 0; i < this._textComponents.length; i++) {
             var rich = this._textComponents[i];
 
@@ -57,9 +65,13 @@ export class leaderboard extends Component {
             }
 
             var run = runs[i];
+            
+
+            var displayName = run.user ? run.user.username : 'Unknown Player';
+            
             var dateText = new Date(run.createdAt).toLocaleDateString();
 
-            rich.string = `${i + 1}. ${run.walletAddress} - Score: ${run.score} - Date: ${dateText}`;
+            rich.string = `<color=#00ff00>${i + 1}.</color> ${displayName} - Score: <color=#ff0000>${run.score}</color>`;
         }
     }
 

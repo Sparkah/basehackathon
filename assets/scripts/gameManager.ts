@@ -5,6 +5,7 @@ import { leaderboard } from './Leaderboard/leaderboard';
 import { authPanel } from './auth/authPanel';
 import { playerStatsPanel } from './menu/playerStatsPanel';
 import { playerData } from './playerData';
+import { mintPanel } from './mintPanel';
 
 const { ccclass, property } = _decorator;
 
@@ -17,6 +18,8 @@ export class gameManager extends Component {
     @property(authPanel) public authPanel: authPanel = null;
     @property(Node) public LeaderboardPanel: Node = null;
     @property(playerStatsPanel) public PlayerStatsPanel: playerStatsPanel = null;
+    @property(mintPanel)
+    public MintPanel: mintPanel = null;
 
     public ApiClient: apiClient = null;
     public playerData: playerData = null;
@@ -79,7 +82,15 @@ export class gameManager extends Component {
         }
 
         // 3. Switch Panel Instantly
-        this.showMenu();
+        this.GameplayPanel.active = false; // Hide game
+        
+        if (this.MintPanel) {
+            this.MintPanel.init(this); // Pass reference so it can call showMenu() later
+            this.MintPanel.show(finalScore);
+        } else {
+            // Fallback if panel isn't assigned
+            this.showMenu();
+        }
     }
 
     public showMenu() {

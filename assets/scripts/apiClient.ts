@@ -98,6 +98,34 @@ export class apiClient extends Component {
         return this._callUpgradeEndpoint('/users/upgradevalue');
     }
 
+    public async checkScoreStatus(score: number) {
+        try {
+            const response = await fetch(`${this.BaseUrl}/nft/check/${score}`);
+            return await response.json(); // Returns { available: true } OR { available: false, owner: "mrtimm" }
+        } catch (e) {
+            console.error("Check score failed", e);
+            return { available: false, owner: "Error" }; // Fail safe
+        }
+    }
+
+    public async mintScore(score: number) {
+        try {
+            const token = localStorage.getItem('auth_token');
+            const response = await fetch(`${this.BaseUrl}/nft/mint`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ score })
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("Minting failed", e);
+            return { error: e };
+        }
+    }
+
     private async _callUpgradeEndpoint(endpoint: string) {
         try {
             const token = localStorage.getItem('auth_token');

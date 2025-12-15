@@ -6,6 +6,7 @@ import { authPanel } from './auth/authPanel';
 import { playerStatsPanel } from './menu/playerStatsPanel';
 import { playerData } from './playerData';
 import { mintPanel } from './mintPanel';
+import { nftPanel } from './nftPanel'
 
 const { ccclass, property } = _decorator;
 
@@ -18,8 +19,8 @@ export class gameManager extends Component {
     @property(authPanel) public authPanel: authPanel = null;
     @property(Node) public LeaderboardPanel: Node = null;
     @property(playerStatsPanel) public PlayerStatsPanel: playerStatsPanel = null;
-    @property(mintPanel)
-    public MintPanel: mintPanel = null;
+    @property(mintPanel) public MintPanel: mintPanel = null;
+    @property(nftPanel) public NftPanel: nftPanel = null;
 
     public ApiClient: apiClient = null;
     public playerData: playerData = null;
@@ -83,7 +84,7 @@ export class gameManager extends Component {
 
         // 3. Switch Panel Instantly
         this.GameplayPanel.active = false; // Hide game
-        
+
         if (this.MintPanel) {
             this.MintPanel.init(this); // Pass reference so it can call showMenu() later
             this.MintPanel.show(finalScore);
@@ -107,5 +108,17 @@ export class gameManager extends Component {
             this.ApiClient.getAllRuns().then(runs => comp.showLeaderboard(runs));
         }
         this.MenuPanel.active = false;
+    }
+
+    public onMyNftsClicked() {
+        this.MenuPanel.active = false;
+        this.NftPanel.init(this);
+        this.NftPanel.showMyCollection();
+    }
+
+    public onNftLeaderboardClicked() {
+        this.MenuPanel.active = false;
+        this.NftPanel.init(this);
+        this.NftPanel.showLeaderboard();
     }
 }

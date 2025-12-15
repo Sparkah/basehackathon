@@ -15,17 +15,23 @@ export class menuPanel extends Component {
     public viewNormalLeaderbiardBtn: Button = null;
 
     @property(Button)
-    public viewNFTLeaderbiardBtn: Button = null;
+    public viewNFTLeaderboardBtn: Button = null;
+
+    @property(Button)
+    public viewMyNFTButton: Button = null;
 
     start() {
         if (this.startGameBtn) {
             this.startGameBtn.node.on(Button.EventType.CLICK, this._onStartClicked, this);
         }
-        if(this.viewNormalLeaderbiardBtn) {
+        if (this.viewNormalLeaderbiardBtn) {
             this.viewNormalLeaderbiardBtn.node.on(Button.EventType.CLICK, this._onViewNormalLeaderboardClicked, this);
         }
-        if(this.viewNFTLeaderbiardBtn) {
-            this.viewNFTLeaderbiardBtn.node.on(Button.EventType.CLICK, this._onViewNFTLeaderboardClicked, this);
+        if (this.viewNFTLeaderboardBtn) {
+            this.viewNFTLeaderboardBtn.node.on(Button.EventType.CLICK, this._onViewNFTLeaderboardClicked, this);
+        }
+        if (this.viewMyNFTButton) {
+            this.viewMyNFTButton.node.on(Button.EventType.CLICK, this._onviewMyNFTButton, this);
         }
     }
 
@@ -43,7 +49,13 @@ export class menuPanel extends Component {
 
     private _onViewNFTLeaderboardClicked() {
         if (this.GameManager) {
-            this.GameManager.showNFTLeaderboard();
+            this.GameManager.onNftLeaderboardClicked();
         }
-    }   
+    }
+
+    private _onviewMyNFTButton() {
+        if (this.GameManager) {
+            this.GameManager.onMyNftsClicked();
+        }
+    }
 }

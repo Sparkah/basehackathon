@@ -1,7 +1,6 @@
 import { _decorator, Component } from 'cc';
 const { ccclass, property } = _decorator;
 
-// Define the shape of a Run based on your new Backend logic
 interface RunData {
     id: number;
     score: number;
@@ -88,8 +87,6 @@ export class apiClient extends Component {
         }
     }
 
-    // Add these methods to your apiClient class
-
     public async upgradeCrit(): Promise<any> {
         return this._callUpgradeEndpoint('/users/upgradecrit');
     }
@@ -101,10 +98,10 @@ export class apiClient extends Component {
     public async checkScoreStatus(score: number) {
         try {
             const response = await fetch(`${this.BaseUrl}/nft/check/${score}`);
-            return await response.json(); // Returns { available: true } OR { available: false, owner: "mrtimm" }
+            return await response.json();
         } catch (e) {
             console.error("Check score failed", e);
-            return { available: false, owner: "Error" }; // Fail safe
+            return { available: false, owner: "Error" };
         }
     }
 
@@ -123,6 +120,49 @@ export class apiClient extends Component {
         } catch (e) {
             console.error("Minting failed", e);
             return { error: e };
+        }
+    }
+
+    public async linkWallet(address: string) {
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) return { success: false };
+
+            const response = await fetch(`${this.BaseUrl}/users/link-wallet`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ walletAddress: address })
+            });
+
+            return await response.json();
+        } catch (e) {
+            console.error("Link wallet failed:", e);
+            return { success: false };
+        }
+    }
+
+    public async getMyNfts() {
+        return this.authenticatedGet('/nft/my-nfts');
+    }
+
+    public async getNftLeaderboard() {
+        return this.authenticatedGet('/nft/leaderboard');
+    }
+
+    private async authenticatedGet(endpoint: string) {
+        try {
+            const token = localStorage.getItem('auth_token');
+            const response = await fetch(`${this.BaseUrl}${endpoint}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("API Error", e);
+            return [];
         }
     }
 

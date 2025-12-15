@@ -1,11 +1,12 @@
 import { _decorator, Component } from 'cc';
 const { ccclass } = _decorator;
 
-@ccclass('playerData') // Note: Class name should match file usually
+@ccclass('playerData')
 export class playerData extends Component {
     public currentCoins: number = 0;
     public currentCritsUpgrds: number = 0;
     public currentClickPowerUpgrds: number = 0;
+    public walletAddress: string = null;
 
     public async loadData() {
         try {
@@ -23,13 +24,13 @@ export class playerData extends Component {
             if (!response.ok) throw new Error(`Status: ${response.status}`);
 
             const data = await response.json();
-
-            // ✅ FIX: Match Backend JSON Keys exactly
+            
             this.currentCoins = data.coins || 0;
-            this.currentCritsUpgrds = data.critUpgrades || 1;   // Backend sends 'critUpgrades'
-            this.currentClickPowerUpgrds = data.valueUpgrades || 1; // Backend sends 'valueUpgrades'
+            this.currentCritsUpgrds = data.critUpgrades || 0;
+            this.currentClickPowerUpgrds = data.valueUpgrades || 0;
+            this.walletAddress = data.walletAddress || null;
 
-            console.log("✅ Data Sync:", this.currentCoins, this.currentCritsUpgrds, this.currentClickPowerUpgrds);
+            console.log("✅ Data Loaded. Wallet:", this.walletAddress);
         } catch (error) {
             console.error("Error loading player data:", error);
         }

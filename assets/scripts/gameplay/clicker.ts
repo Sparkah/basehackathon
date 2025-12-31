@@ -18,7 +18,16 @@ export class clicker extends Component {
     @property(Node)
     public GameManagerNode: Node = null; // Reference to the Node containing GameManager
 
+
+    @property(Node)
+    public pickaxeNode: Node = null!;
+
+
+
+
+
     // Internal State
+    private _mining: any = null;
     private _gameManager: gameManager = null;
     private _playerData: playerData = null;
     private _score: number = 0;
@@ -41,6 +50,9 @@ export class clicker extends Component {
         if (this.GameManagerNode) {
             this._gameManager = this.GameManagerNode.getComponent(gameManager);
         }
+        this._mining = this.pickaxeNode?.getComponent('Mining');
+
+
     }
 
     // ✅ Called by GameManager before starting to pass upgrade levels
@@ -83,8 +95,14 @@ export class clicker extends Component {
         }
     }
 
+
     private _onClick() {
         if (!this._gameStarted || this._timer <= 0) return;
+
+        //Click Animation
+        this._mining?.playMine();
+
+
 
         // --- CALCULATION LOGIC ---
         
